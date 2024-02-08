@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "airport-traffic"
+version = "0.1.0"
+description = ""
+authors = ["Bogdan Fometescu <75015831+BogdanMFometescu@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+dash = "^2.15.0"
+pandas = "^2.2.0"
+uvicorn = "^0.27.0.post1"
+pydantic = "^2.6.0"
+python-dotenv = "^1.0.1"
+sqlalchemy = "^2.0.25"
+psycopg2-binary = "^2.9.9"
+fastapi = "^0.109.0"
+flake8 = "^7.0.0"
+pytest = "^8.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
