@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from src.models.airport import AirportBaseModel
 from src.models.schedule import ScheduleBaseModel
 from src.models.airplane import AirplaneBaseModel
-import sqlalchemy.exc
+#import sqlalchemy.exc
 
 API_KEY = os.environ.get('AIRLAB_API_KEY')
 
@@ -62,62 +62,114 @@ class JsonStorage(Storage):
                 filtered_data.append(filtered_info)
         return filtered_data
 
-    def save_airport_details_to_db(self, data: list, db: Session):
-        saved_airports = []
-        for airport_data in data:
-            try:
-                required_fields = ['name', 'iata_code', 'icao_code', 'lat', 'lng', 'country_code']
-                if not all(field in airport_data for field in required_fields):
-                    continue
+    # def save_airport_details_to_db(self, data: list, db: Session):
+    #     saved_airports = []
+    #     for airport_data in data:
+    #         try:
+    #             required_fields = ['name', 'iata_code', 'icao_code', 'lat', 'lng', 'country_code']
+    #             if not all(field in airport_data for field in required_fields):
+    #                 continue
+    #
+    #             existing_airport = db.query(AirportBaseModel).filter(
+    #                 AirportBaseModel.iata_code == airport_data['iata_code']).first()
+    #             if existing_airport is None:
+    #                 airport = AirportBaseModel(**airport_data)
+    #                 db.add(airport)
+    #                 db.commit()
+    #                 saved_airports.append(airport)
+    #         except sqlalchemy.exc.SQLAlchemyError as e:
+    #             f'Some error occurred {e}'
+    #             continue
+    #     return saved_airports
 
-                existing_airport = db.query(AirportBaseModel).filter(
-                    AirportBaseModel.iata_code == airport_data['iata_code']).first()
-                if existing_airport is None:
-                    airport = AirportBaseModel(**airport_data)
-                    db.add(airport)
-                    db.commit()
-                    saved_airports.append(airport)
-            except sqlalchemy.exc.SQLAlchemyError as e:
-                f'Some error occurred {e}'
-                continue
-        return saved_airports
+    def save_airport_details_to_db(self, data: list, db: Session):
+        for airport_data in data:
+            existing_airport = db.query(AirportBaseModel).filter(
+                AirportBaseModel.iata_code == airport_data['iata_code']).first()
+            if existing_airport is None:
+                airport = AirportBaseModel(
+                    name=airport_data['name'],
+                    iata_code=airport_data['iata_code'],
+                    icao_code=airport_data['icao_code'],
+                    lat=airport_data['lat'],
+                    lng=airport_data['lng'],
+                    country_code=airport_data['country_code'],
+                )
+                db.add(airport)
+        db.commit()
+
 
     def save_schedule_details_to_db(self, data: list, db: Session):
-        saved_schedules = []
         for schedule_data in data:
-            try:
-                required_fields = ['dep_iata', 'flight_number', 'dep_time', 'arr_iata', 'arr_time', 'duration',
-                                   'status']
-                if not all(field in schedule_data for field in required_fields):
-                    continue
-                existing_schedule = db.query(ScheduleBaseModel).filter(
-                    ScheduleBaseModel.dep_iata == schedule_data['dep_iata'],
-                    ScheduleBaseModel.flight_number == schedule_data['flight_number']).first()
-                if existing_schedule is None:
-                    schedule = ScheduleBaseModel(**schedule_data)
-                    db.add(schedule)
-                    db.commit()
-                    saved_schedules.append(schedule)
-            except sqlalchemy.exc.SQLAlchemyError as e:
-                f'Some error occurred {e}'
-                continue
-        return saved_schedules
+            existing_schedule = db.query(ScheduleBaseModel).filter(
+                ScheduleBaseModel.dep_iata == schedule_data['dep_iata']).first()
+            if existing_schedule is None:
+                schedule = ScheduleBaseModel(
+                    dep_iata=schedule_data['dep_iata'],
+                    flight_number=schedule_data['flight_number'],
+                    dep_time=schedule_data['dep_time'],
+                    arr_iata=schedule_data['arr_iata'],
+                    arr_time=schedule_data['arr_time'],
+                    duration=schedule_data['duration'],
+                    status=schedule_data['status'],
+                )
+                db.add(schedule)
+        db.commit()
 
     def save_airplane_details_to_db(self, data: list, db: Session):
-        saved_airplanes = []
         for airplane_data in data:
-            try:
-                required_fields = ['iata', 'model', 'manufacturer']
-                if not all(field in airplane_data for field in required_fields):
-                    continue
-                existing_airplane = db.query(AirplaneBaseModel).filter(
-                    AirplaneBaseModel.iata == airplane_data['iata']).first()
-                if existing_airplane is None:
-                    airplane = AirplaneBaseModel(**airplane_data)
-                    db.add(airplane)
-                    db.commit()
-                    saved_airplanes.append(airplane)
-            except sqlalchemy.exc.SQLAlchemyError as e:
-                f'Some error occurred {e}'
-                continue
-        return saved_airplanes
+            existing_airplane = db.query(AirplaneBaseModel).filter(
+                AirplaneBaseModel.iata == airplane_data['iata']).first()
+            if existing_airplane is None:
+                airplane = AirplaneBaseModel(
+                    iata=airplane_data['iata'],
+                    model=airplane_data['model'],
+                    manufacturer=airplane_data['manufacturer'],
+
+                )
+                db.add(airplane)
+        db.commit()
+
+
+
+
+    #
+    # def save_schedule_details_to_db(self, data: list, db: Session):
+    #     saved_schedules = []
+    #     for schedule_data in data:
+    #         try:
+    #             required_fields = ['dep_iata', 'flight_number', 'dep_time', 'arr_iata', 'arr_time', 'duration',
+    #                                'status']
+    #             if not all(field in schedule_data for field in required_fields):
+    #                 continue
+    #             existing_schedule = db.query(ScheduleBaseModel).filter(
+    #                 ScheduleBaseModel.dep_iata == schedule_data['dep_iata'],
+    #                 ScheduleBaseModel.flight_number == schedule_data['flight_number']).first()
+    #             if existing_schedule is None:
+    #                 schedule = ScheduleBaseModel(**schedule_data)
+    #                 db.add(schedule)
+    #                 db.commit()
+    #                 saved_schedules.append(schedule)
+    #         except sqlalchemy.exc.SQLAlchemyError as e:
+    #             f'Some error occurred {e}'
+    #             continue
+    #     return saved_schedules
+    #
+    # def save_airplane_details_to_db(self, data: list, db: Session):
+    #     saved_airplanes = []
+    #     for airplane_data in data:
+    #         try:
+    #             required_fields = ['iata', 'model', 'manufacturer']
+    #             if not all(field in airplane_data for field in required_fields):
+    #                 continue
+    #             existing_airplane = db.query(AirplaneBaseModel).filter(
+    #                 AirplaneBaseModel.iata == airplane_data['iata']).first()
+    #             if existing_airplane is None:
+    #                 airplane = AirplaneBaseModel(**airplane_data)
+    #                 db.add(airplane)
+    #                 db.commit()
+    #                 saved_airplanes.append(airplane)
+    #         except sqlalchemy.exc.SQLAlchemyError as e:
+    #             f'Some error occurred {e}'
+    #             continue
+    #     return saved_airplanes
