@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  fastapi:
+    image: fastapi02
+    env_file:
+      - .env
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+
+  dash:
+    image: dash02
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    ports:
+      - '8050:8050'
+    depends_on:
+      - db
+      - fastapi
+    networks:
+      - app_network
+
+
+
+  db:
+    image: postgres:13
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
