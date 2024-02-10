@@ -42,9 +42,9 @@ def get_airports(db: SessionLocal = Depends(get_db)):
 @airport_router_api.get('/{iata_code}', response_model=List[Airport], tags=['api/airport'], )
 def get_airport(iata_code: str, db: SessionLocal = Depends(get_db)):
     try:
-        db_airport = db.query(AirportBaseModel).filter(AirportBaseModel.iata_code == iata_code).first()
+        db_airport = db.query(AirportBaseModel).filter(AirportBaseModel.iata_code == iata_code).all()
         if db_airport:
-            return [Airport.from_orm(db_airport)]
+            return [Airport.from_orm(airport) for airport in db_airport]
 
     except sqlalchemy.exc.SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -52,7 +52,7 @@ def get_airport(iata_code: str, db: SessionLocal = Depends(get_db)):
         api_airport = storage.get_airport_details(iata_code)
         if api_airport:
             saved_airport = storage.save_airport_details_to_db(api_airport, db)
-            return [Airport.from_orm(saved_airport)]
+            return [Airport.from_orm(airport) for airport in saved_airport]
 
     except RequestException as e:
         raise HTTPException(status_code=503, detail=str(e))

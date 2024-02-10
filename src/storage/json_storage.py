@@ -62,6 +62,7 @@ class JsonStorage(Storage):
         return filtered_data
 
     def save_airport_details_to_db(self, data: list, db: Session):
+        airports = []
         for airport_data in data:
             existing_airport = db.query(AirportBaseModel).filter(
                 AirportBaseModel.iata_code == airport_data['iata_code']).first()
@@ -74,10 +75,13 @@ class JsonStorage(Storage):
                     lng=airport_data['lng'],
                     country_code=airport_data['country_code'],
                 )
+                airports.append(airport)
                 db.add(airport)
         db.commit()
+        return airports
 
     def save_schedule_details_to_db(self, data: list, db: Session):
+        schedules = []
         for schedule_data in data:
             existing_schedule = db.query(ScheduleBaseModel).filter(
                 ScheduleBaseModel.dep_iata == schedule_data['dep_iata']).first()
@@ -91,10 +95,13 @@ class JsonStorage(Storage):
                     duration=schedule_data['duration'],
                     status=schedule_data['status'],
                 )
+                schedules.append(schedule)
                 db.add(schedule)
         db.commit()
+        return schedules
 
     def save_airplane_details_to_db(self, data: list, db: Session):
+        airplanes = []
         for airplane_data in data:
             existing_airplane = db.query(AirplaneBaseModel).filter(
                 AirplaneBaseModel.iata == airplane_data['iata']).first()
@@ -105,5 +112,7 @@ class JsonStorage(Storage):
                     manufacturer=airplane_data['manufacturer'],
 
                 )
+                airplanes.append(airplane)
                 db.add(airplane)
         db.commit()
+        return airplanes

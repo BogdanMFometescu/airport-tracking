@@ -41,9 +41,9 @@ def get_schedules(db: SessionLocal = Depends(get_db)):
 @schedule_router_api.get('/{iata_code}', response_model=List[Schedule], tags=['api/schedule'], )
 def get_schedule_details(iata_code: str, db: SessionLocal = Depends(get_db)):
     try:
-        db_schedule = db.query(ScheduleBaseModel).filter(ScheduleBaseModel.dep_iata == iata_code).first()
+        db_schedule = db.query(ScheduleBaseModel).filter(ScheduleBaseModel.dep_iata == iata_code).all()
         if db_schedule:
-            return [Schedule.from_orm(db_schedule)]
+            return [Schedule.from_orm(schedule) for schedule in db_schedule]
 
     except sqlalchemy.exc.SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -52,7 +52,7 @@ def get_schedule_details(iata_code: str, db: SessionLocal = Depends(get_db)):
         api_schedule = storage.get_airport_schedule(iata_code)
         if api_schedule:
             saved_schedule = storage.save_schedule_details_to_db(api_schedule, db)
-            return [Schedule.from_orm(saved_schedule)]
+            return [Schedule.from_orm(schedule) for schedule in saved_schedule]
     except RequestException as e:
         raise HTTPException(status_code=503, detail=str(e))
     raise HTTPException(status_code=404, detail='Schedule not found')
