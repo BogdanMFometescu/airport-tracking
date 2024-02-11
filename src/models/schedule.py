@@ -17,8 +17,7 @@ class Schedule(BaseModel):
     duration: int
     status: str
 
-    class Config:
-        orm_mode = True
+    class ConfigDict:
         from_attributes = True
 
 

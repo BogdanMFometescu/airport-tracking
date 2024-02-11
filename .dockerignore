@@ -2,6 +2,7 @@
 .git
 .gitignore
 .gitattributes
+tests
 
 
 # CI
