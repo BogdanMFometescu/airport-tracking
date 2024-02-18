@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from src.models.airplane import Airplane, AirplaneBaseModel, Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.storage.utils import get_database_url
+from src.api.utils import get_database_url
 
 engine = create_engine(get_database_url())
 

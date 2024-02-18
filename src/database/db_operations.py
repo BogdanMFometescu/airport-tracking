@@ -1,67 +1,16 @@
 import os
-from .base import Storage
-import requests
-from sqlalchemy.orm import Session
+from .db_base import Database
 from src.models.airport import AirportBaseModel
 from src.models.schedule import ScheduleBaseModel
 from src.models.airplane import AirplaneBaseModel
+from sqlalchemy.orm import Session
 
-API_KEY = os.environ.get('AIRLAB_API_KEY')
 
-
-class JsonStorage(Storage):
+class DBOperations(Database):
     def __init__(self):
         super().__init__()
 
-    def get_airplane_details(self):
-        api_base = f'https://airlabs.co/api/v9/fleets?api_key={API_KEY}'
-        api_result = requests.get(api_base)
-        api_response = api_result.json()
-        airplane_data = api_response['response']
-        filtered_data = []
-
-        for airplane in airplane_data:
-            filtered_info = {}
-            keys = ['iata', 'model', 'manufacturer', 'built', 'age']
-            for key in keys:
-                if airplane.get(key) is not None:
-                    filtered_info[key] = airplane.get(key)
-            if filtered_info:
-                filtered_data.append(filtered_info)
-        return filtered_data
-
-    def get_airport_details(self, iata_code: str):
-        api_base = f'https://airlabs.co/api/v9/airports?iata_code={iata_code}&api_key={API_KEY}'
-        api_result = requests.get(api_base)
-        api_response = api_result.json()
-        data = api_response['response']
-        return data
-
-    def get_airport_schedule(self, iata_code: str):
-        api_base = f'https://airlabs.co/api/v9/schedules?dep_iata={iata_code}&api_key={API_KEY}'
-        api_result = requests.get(api_base)
-        api_response = api_result.json()
-        flight_data = api_response['response']
-        filtered_data = []
-        for flight in flight_data:
-            filtered_info = {}
-            keys = ['dep_iata',
-                    'flight_number',
-                    'dep_terminal',
-                    'dep_time',
-                    'arr_iata',
-                    'arr_terminal',
-                    'arr_time',
-                    'duration',
-                    'status']
-            for key in keys:
-                if flight.get(key) is not None:
-                    filtered_info[key] = flight.get(key)
-            if filtered_info:
-                filtered_data.append(filtered_info)
-        return filtered_data
-
-    def save_airport_details_to_db(self, data: list, db: Session):
+    def save_airport_data(self, data: list, db: Session):
         airports = []
         for airport_data in data:
             existing_airport = db.query(AirportBaseModel).filter(
@@ -80,7 +29,7 @@ class JsonStorage(Storage):
         db.commit()
         return airports
 
-    def save_schedule_details_to_db(self, data: list, db: Session):
+    def save_schedule_data(self, data: list, db: Session):
         schedules = []
         for schedule_data in data:
             existing_schedule = db.query(ScheduleBaseModel).filter(
@@ -100,7 +49,7 @@ class JsonStorage(Storage):
         db.commit()
         return schedules
 
-    def save_airplane_details_to_db(self, data: list, db: Session):
+    def save_airplane_data(self, data: list, db: Session):
         airplanes = []
         for airplane_data in data:
             existing_airplane = db.query(AirplaneBaseModel).filter(
@@ -116,3 +65,17 @@ class JsonStorage(Storage):
                 db.add(airplane)
         db.commit()
         return airplanes
+
+    @staticmethod
+    def get_database_url():
+        DB_NAME = os.getenv('DB_NAME')
+        DB_USERNAME = os.getenv('DB_USERNAME')
+        DB_PASSWORD = os.getenv('DB_PASSWORD')
+        DB_HOST = os.getenv('DB_HOST')
+        DB_PORT = os.getenv('DB_PORT')
+
+        if not all([DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT]):
+            raise ValueError("One or more database environment variables are missing.")
+
+        DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        return DATABASE_URL

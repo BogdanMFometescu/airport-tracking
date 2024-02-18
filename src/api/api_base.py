@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
 
-class Storage(ABC):
+class GetRequests(ABC):
     def __init__(self):
         pass
 
@@ -17,14 +17,3 @@ class Storage(ABC):
     def get_airplane_details(self):
         raise NotImplementedError('Method get_airplane_details not implemented')
 
-    @abstractmethod
-    def save_airport_details_to_db(self, data, db):
-        raise NotImplementedError('Method save_airport_details_to_db not implemented')
-
-    @abstractmethod
-    def save_schedule_details_to_db(self, data, db):
-        raise NotImplementedError('Method save_schedule_details_to_db not implemented')
-
-    @abstractmethod
-    def save_airplane_details_to_db(self, data, db):
-        raise NotImplementedError('Method save_schedule_details_to_db not implemented')

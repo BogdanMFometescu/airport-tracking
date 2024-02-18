@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
 from src.models.airport import Airport, AirportBaseModel, Base
-from src.storage.json_storage import JsonStorage
+from src.api.api_calls import ApiCalls
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.storage.utils import get_database_url
+from src.api.utils import get_database_url
 
 engine = create_engine(get_database_url())
 
@@ -12,7 +12,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.bind = engine
 Base.metadata.create_all(engine)
 
-storage = JsonStorage()
+storage = ApiCalls()
 
 airport_router = APIRouter(prefix='/airport', tags=['airport'])
 

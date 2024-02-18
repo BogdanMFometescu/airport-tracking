@@ -2,7 +2,7 @@ import os
 import json
 
 
-def save_airport_info(data, relative_path=''):
+def airport_to_json(data, relative_path=''):
     base_directory = os.path.dirname(os.path.abspath(__file__))
     file_name = 'json_files/airport.json'
     filepath = os.path.join(base_directory, relative_path, file_name)
@@ -10,7 +10,7 @@ def save_airport_info(data, relative_path=''):
         json.dump(data, file)
 
 
-def save_schedule_info(data, relative_path=''):
+def schedule_to_json(data, relative_path=''):
     base_directory = os.path.dirname(os.path.abspath(__file__))
     file_name = 'json_files/schedule.json'
     filepath = os.path.join(base_directory, relative_path, file_name)
@@ -18,7 +18,7 @@ def save_schedule_info(data, relative_path=''):
         json.dump(data, file)
 
 
-def save_airplane_info(data, relative_path=''):
+def airplane_to_json(data, relative_path=''):
     base_directory = os.path.dirname(os.path.abspath(__file__))
     file_name = 'json_files/airplane.json'
     filepath = os.path.join(base_directory, relative_path, file_name)
