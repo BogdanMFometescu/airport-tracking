@@ -2,7 +2,7 @@ from typing import List
 import sqlalchemy.exc
 from requests.exceptions import RequestException
 from fastapi import APIRouter, HTTPException, Depends
-from src.models.airplane import AirplaneBaseModel
+from src.models.airplane import AirplaneBaseModel, Airplane
 from src.models.airport import AirportBaseModel, Airport
 from src.models.schedule import ScheduleBaseModel, Schedule, Base
 from sqlalchemy import create_engine
@@ -71,7 +71,6 @@ def get_airports(db: SessionLocal = Depends(get_db)):
     raise HTTPException(status_code=404, detail='No airplane found in the database ')
 
 
-# Get airport from DB or API based on IATA code
 @airport_router_api.get('/{iata_code}', response_model=List[Airport], tags=['api/airport'], )
 def get_airport(iata_code: str, db: SessionLocal = Depends(get_db)):
     try:
@@ -122,3 +121,110 @@ def get_schedule_details(iata_code: str, db: SessionLocal = Depends(get_db)):
     except RequestException as e:
         raise HTTPException(status_code=503, detail=str(e))
     raise HTTPException(status_code=404, detail='Schedule not found')
+
+
+@airplane_router_api.post("/", tags=['api/airplane'], )
+def create_airplane(airplane: Airplane, db: SessionLocal = Depends(get_db)):
+    new_airplane = AirplaneBaseModel(
+        iata=airplane.iata,
+        model=airplane.model,
+        manufacturer=airplane.manufacturer,
+    )
+    db.add(new_airplane)
+    db.commit()
+    db.refresh(new_airplane)
+    return new_airplane
+
+
+@airplane_router_api.put("/{airplane_id}", tags=['api/airplane'], )
+def update_airplane(airplane_id: int, airplane: Airplane, db: SessionLocal = Depends(get_db)):
+    updated_airplane = db.query(AirplaneBaseModel).filter(AirplaneBaseModel.id == airplane_id).first()
+    if updated_airplane:
+        for var, value in vars(airplane).items():
+            setattr(updated_airplane, var, value) if value else None
+    db.commit()
+    db.refresh(updated_airplane)
+    return updated_airplane
+
+
+@airplane_router_api.delete("/{airplane_id}", tags=['api/airplane'])
+def delete_airplane(airplane_id: int, db: SessionLocal = Depends(get_db)):
+    deleted_airplane = db.query(AirplaneBaseModel).filter(AirplaneBaseModel.id == airplane_id).first()
+    if deleted_airplane is None:
+        raise HTTPException(status_code=404, detail='Airplane not found')
+    db.delete(deleted_airplane)
+    db.commit()
+
+
+@airport_router_api.post('/', tags=['api/airport'])
+def create_airport(airport: Airport, db: SessionLocal = Depends(get_db)):
+    new_airport = AirportBaseModel(name=airport.name,
+                                   iata_code=airport.iata_code,
+                                   icao_code=airport.icao_code,
+                                   lat=airport.lat,
+                                   lng=airport.lng,
+                                   country_code=airport.country_code)
+    db.add(new_airport)
+    db.commit()
+    db.refresh(new_airport)
+    return new_airport
+
+
+@airport_router_api.put('/{airport_id}', tags=['api/airport'], )
+def update_airport(airport_id: int, airport: Airport, db: SessionLocal = Depends(get_db)):
+    updated_airport = db.query(AirportBaseModel).filter(AirportBaseModel.id == airport_id).first()
+    if updated_airport is None:
+        raise HTTPException(status_code=404, detail='Invalid IATA_CODE')
+    for var, value in vars(airport).items():
+        setattr(updated_airport, var, value) if value else None
+    db.commit()
+    db.refresh(updated_airport)
+    return updated_airport
+
+
+@airport_router_api.delete('/{airport_id}', )
+def delete_airport(airport_id: int, db: SessionLocal = Depends(get_db)):
+    deleted_airport = db.query(AirportBaseModel).filter(AirportBaseModel.id == airport_id).first()
+    if deleted_airport is None:
+        raise HTTPException(status_code=404, detail='Invalid IATA_CODE')
+    db.delete(deleted_airport)
+    db.commit()
+
+
+@schedule_router_api.post('/', tags=['api/schedule'], )
+def create_schedule(schedule: Schedule, db: SessionLocal = Depends(get_db)):
+    new_schedule = ScheduleBaseModel(
+        dep_iata=schedule.dep_iata,
+        flight_number=schedule.flight_number,
+        dep_time=schedule.dep_time,
+        arr_iata=schedule.arr_iata,
+        arr_time=schedule.arr_time,
+        duration=schedule.duration,
+        status=schedule.status,
+
+    )
+    db.add(new_schedule)
+    db.commit()
+    db.refresh(new_schedule)
+    return new_schedule
+
+
+@schedule_router_api.put('/{item_id}', tags=['api/schedule'], )
+def update_schedule(item_id: int, schedule: Schedule, db: SessionLocal = Depends(get_db)):
+    updated_schedule = db.query(ScheduleBaseModel).filter(ScheduleBaseModel.id == item_id).first()
+    if updated_schedule is None:
+        raise HTTPException(status_code=404, detail='Schedule not found')
+    for var, value in vars(schedule).items():
+        setattr(updated_schedule, var, value) if value else None
+    db.commit()
+    db.refresh(updated_schedule)
+    return updated_schedule
+
+
+@schedule_router_api.delete('/{item_id}', tags=['api/schedule'])
+def delete_schedule(item_id: int, db: SessionLocal = Depends(get_db)):
+    deleted_schedule = db.query(ScheduleBaseModel).filter(ScheduleBaseModel.id == item_id).first()
+    if deleted_schedule is None:
+        raise HTTPException(status_code=404, detail="Schedule not found")
+    db.delete(deleted_schedule)
+    db.commit()
