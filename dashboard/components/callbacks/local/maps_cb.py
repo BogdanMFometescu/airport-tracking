@@ -4,7 +4,7 @@ import requests
 
 
 def create_map():
-    response = requests.get("http://fastapi:5000/api/airport")
+    response = requests.get("http://localhost:5000/api/airport")
     if response.status_code == 200:
         airports = response.json()
         df = pd.DataFrame(airports)

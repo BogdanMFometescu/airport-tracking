@@ -14,8 +14,8 @@ class Airport(BaseModel):
     lng: float
     country_code: str
 
-    class ConfigDict:
-        from_attributes = True
+    class Config:
+        orm_mode = True
 
 
 class AirportBaseModel(Base):

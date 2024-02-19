@@ -5,7 +5,7 @@ from dash import html
 def update_schedules_callback(n_clicks):
     if n_clicks is None or n_clicks < 1:
         return 'Click the button ....'
-    response = requests.get(f"http://fastapi:5000/api/schedule")
+    response = requests.get(f"http://localhost:5000/api/schedule")
     if response.status_code == 200:
         schedules = response.json()
         if schedules:
@@ -19,7 +19,7 @@ def update_schedules_callback(n_clicks):
 def update_schedule_callback(n_clicks, dep_iata):
     if n_clicks is None or n_clicks < 1:
         return 'Click the button to search a schedule'
-    response = requests.get(f"http://fastapi:5000/api/schedule/{dep_iata}")
+    response = requests.get(f"http://localhost:5000/api/schedule/{dep_iata}")
     if response.status_code == 200:
         schedules = response.json()
         if schedules:

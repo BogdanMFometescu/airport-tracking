@@ -5,7 +5,7 @@ from dash import html
 def update_airplanes_callback(n_clicks):
     if n_clicks is None or n_clicks < 1:
         return 'Click the button to search an airplane'
-    response = requests.get("http://fastapi:5000/api/airplane")
+    response = requests.get("http://localhost:5000/api/airplane")
     if response.status_code == 200:
         schedules = response.json()
         if schedules:
