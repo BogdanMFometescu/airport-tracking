@@ -23,11 +23,13 @@ app.layout = html.Div([
 
     html.H2('Search data'),
     html.Button('Search Airport', id='search-airport-btn', className='button', n_clicks=0),
-    dcc.Input(id='iata-input', type='text', placeholder='Enter IATA Code to search for an airport',
+    dcc.Input(id='dep-iata-input', type='text', placeholder='Enter IATA code to search for airport ',
               className='input-text'),
     html.Button('Search Airport Schedule', id='search-schedule-btn', className='button', n_clicks=0),
-    dcc.Input(id='dep-iata-input', type='text', placeholder='Enter IATA code to search for airport schedule',
+    dcc.Input(id='iata-input', type='text', placeholder='Enter IATA Code to search for airport schedule',
               className='input-text'),
+
+
     html.Br(),
     html.Div(id='output-container', className='output-container'),
     html.Br(),
@@ -58,17 +60,22 @@ def update_general_info(selected_list):
     return {}
 
 
-@app.callback(Output('output-container', 'children', allow_duplicate=True),
-              [Input('search-airport-btn', 'n_clicks'),
-               Input('search-schedule-btn', 'n_clicks')],
-              [State('iata-input', 'value'),
-               State('dep-iata-input', 'value')],
-              prevent_initial_call=True)
+@app.callback(
+    Output('output-container', 'children', allow_duplicate=True),
+    [Input('search-airport-btn', 'n_clicks'),
+     Input('search-schedule-btn', 'n_clicks')],
+    [State('iata-input', 'value'),
+     State('dep-iata-input', 'value')],
+    prevent_initial_call=True)
 def search_dashboard(airport_n_clicks, schedule_n_clicks, dep_iata, iata_code):
     context = dash.callback_context
     if not context.triggered:
         return "No triggered"
     button_id = context.triggered[0]['prop_id'].split('.')[0]
+    print(f"Button ID: {button_id}")
+    print(f"Searching for IATA Code: {iata_code}")
+    print(f"Button clicked: {button_id}")
+    print(f"Dep IATA: {dep_iata}")
     if button_id == 'search-airport-btn':
         return update_airport_callback(airport_n_clicks, iata_code)
     elif button_id == 'search-schedule-btn':

@@ -13,7 +13,7 @@ def update_airports_callback(n_clicks):
         else:
             return 'No airports found'
     else:
-        return 'Failed to fetch airports'
+        return f'Failed to fetch airports - HTTP Status: {response.status_code}'
 
 
 def update_airport_callback(n_clicks, iata_code):
@@ -27,7 +27,7 @@ def update_airport_callback(n_clicks, iata_code):
         else:
             return 'No airports found'
     else:
-        return 'Failed to fetch airports'
+        return f'Failed to fetch airport - HTTP Status: {response.status_code}'
 
 
 def generate_airports_html_table(airports):
