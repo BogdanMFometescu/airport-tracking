@@ -4,7 +4,6 @@ from dash import html
 
 def update_schedules_callback(n_clicks):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
-
     if n_clicks < 1:
         return 'Click the button to search a schedule'
     response = requests.get(f"http://fastapi:5000/api/schedule")
@@ -20,7 +19,6 @@ def update_schedules_callback(n_clicks):
 
 def update_schedule_callback(n_clicks, dep_iata):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
-
     if n_clicks < 1:
         return 'Click the button to search a schedule'
     response = requests.get(f"http://fastapi:5000/api/schedule/{dep_iata}")

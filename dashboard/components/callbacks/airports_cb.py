@@ -3,7 +3,8 @@ from dash import html
 
 
 def update_airports_callback(n_clicks):
-    if n_clicks is None or n_clicks < 1:
+    n_clicks = int(n_clicks) if n_clicks is not None else 0
+    if n_clicks < 1:
         return 'Click the button below to list airports'
     response = requests.get("http://fastapi:5000/api/airport")
     if response.status_code == 200:
@@ -17,7 +18,8 @@ def update_airports_callback(n_clicks):
 
 
 def update_airport_callback(n_clicks, iata_code):
-    if n_clicks is None or n_clicks < 1:
+    n_clicks = int(n_clicks) if n_clicks is not None else 0
+    if n_clicks < 1:
         return 'Click the button below to list airports'
     response = requests.get(f"http://fastapi:5000/api/airport/{iata_code}")
     if response.status_code == 200:
