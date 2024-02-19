@@ -13,7 +13,7 @@ class Airplane(BaseModel):
     manufacturer: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class AirplaneBaseModel(Base):
