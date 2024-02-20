@@ -1,12 +1,17 @@
+import os
 import requests
 from dash import html
+from dotenv import load_dotenv
+
+load_dotenv()
+host = os.getenv('API_HOST', 'localhost')
 
 
 def update_schedules_callback(n_clicks):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
     if n_clicks < 1:
         return 'Click the button to search a schedule'
-    response = requests.get(f"http://fastapi:5000/api/schedule")
+    response = requests.get(f"http://{host}:5000/api/schedule")
     if response.status_code == 200:
         schedules = response.json()
         if schedules:
@@ -21,7 +26,7 @@ def update_schedule_callback(n_clicks, dep_iata):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
     if n_clicks < 1:
         return 'Click the button to search a schedule'
-    response = requests.get(f"http://fastapi:5000/api/schedule/{dep_iata}")
+    response = requests.get(f"http://{host}:5000/api/schedule/{dep_iata}")
     if response.status_code == 200:
         schedules = response.json()
         if schedules:

@@ -1,10 +1,16 @@
+import os
+import requests
 import plotly.express as px
 import pandas as pd
-import requests
+
+from dotenv import load_dotenv
+
+load_dotenv()
+host = os.getenv('API_HOST', 'localhost')
 
 
 def create_map():
-    response = requests.get("http://fastapi:5000/api/airport")
+    response = requests.get(f"http://{host}:5000/api/airport")
     if response.status_code == 200:
         airports = response.json()
         df = pd.DataFrame(airports)

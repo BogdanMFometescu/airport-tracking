@@ -1,12 +1,18 @@
+import os
 import requests
+
 from dash import html
+from dotenv import load_dotenv
+
+load_dotenv()
+host = os.getenv('API_HOST', 'localhost')
 
 
 def update_airports_callback(n_clicks):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
     if n_clicks < 1:
         return 'Click the button below to list airports'
-    response = requests.get("http://fastapi:5000/api/airport")
+    response = requests.get(f"http://{host}:5000/api/airport")
     if response.status_code == 200:
         airports = response.json()
         if airports:
@@ -21,7 +27,7 @@ def update_airport_callback(n_clicks, iata_code):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
     if n_clicks < 1:
         return 'Click the button below to list airports'
-    response = requests.get(f"http://fastapi:5000/api/airport/{iata_code}")
+    response = requests.get(f"http://{host}:5000/api/airport/{iata_code}")
     if response.status_code == 200:
         airports = response.json()
         if airports:

@@ -1,12 +1,17 @@
+import os
 import requests
 from dash import html
+from dotenv import load_dotenv
+
+load_dotenv()
+host = os.getenv('API_HOST', 'localhost')
 
 
 def update_airplanes_callback(n_clicks):
     n_clicks = int(n_clicks) if n_clicks is not None else 0
     if n_clicks < 1:
         return 'Click the button to search an airplane'
-    response = requests.get("http://fastapi:5000/api/airplane")
+    response = requests.get(f"http://{host}:5000/api/airplane")
     if response.status_code == 200:
         schedules = response.json()
         if schedules:

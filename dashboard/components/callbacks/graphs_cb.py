@@ -1,6 +1,11 @@
+import os
 import requests
 import pandas as pd
 import plotly.express as px
+from dotenv import load_dotenv
+
+load_dotenv()
+host = os.getenv('API_HOST', 'localhost')
 
 common_layout = {
     'title_font_size': 22,
@@ -37,7 +42,7 @@ common_layout = {
 def airplanes_graph(n_clicks):
     if not n_clicks:
         return px.bar()
-    response = requests.get("http://fastapi:5000/api/airplane")
+    response = requests.get(f"http://{host}:5000/api/airplane")
     if response.status_code == 200:
         airplanes_data = response.json()
         df = pd.DataFrame(airplanes_data)
@@ -52,7 +57,7 @@ def airplanes_graph(n_clicks):
 def airports_graph(n_clicks):
     if not n_clicks:
         return px.bar()
-    response = requests.get("http://fastapi:5000/api/airport")
+    response = requests.get(f"http://{host}:5000/api/airport")
     if response.status_code == 200:
         airports_data = response.json()
         df = pd.DataFrame(airports_data)
@@ -68,7 +73,7 @@ def airports_graph(n_clicks):
 def schedules_graph(n_clicks):
     if not n_clicks:
         return px.bar()
-    response = requests.get("http://fastapi:5000/api/schedule")
+    response = requests.get(f"http://{host}:5000/api/schedule")
     if response.status_code == 200:
         schedules_data = response.json()
         df = pd.DataFrame(schedules_data)
