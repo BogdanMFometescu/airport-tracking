@@ -35,7 +35,7 @@ def update_airport_callback(n_clicks, iata_code):
         else:
             return 'No airports found'
     else:
-        return 'Failed to fetch airports'
+        return 'Invalid IATA code'
 
 
 def generate_airports_html_table(airports):

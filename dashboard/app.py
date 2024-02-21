@@ -1,4 +1,3 @@
-
 import dash
 from dash import html, dcc
 from components.callbacks.register_callbacks import register_callbacks
@@ -26,7 +25,6 @@ app.layout = html.Div([
     html.Button('Search Airport Schedule', id='search-schedule-btn', className='button', n_clicks=0),
     dcc.Input(id='iata-input', type='text', placeholder='Enter IATA Code to search for airport schedule',
               className='input-text'),
-
 
     html.Br(),
     html.Div(id='output-container', className='output-container'),
