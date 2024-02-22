@@ -15,7 +15,7 @@ Requests for information are made to an external API using airlabs API.
 - Poetry for Python dependency management
 - Postgres database
 - Virtual environment (optional but recommended)
-- AIRLAB API KEY (which is has a free tier with 1000 request / month) :https://airlabs.co/
+- AIRLAB API KEY (which has a free tier with 1000 request / month) :https://airlabs.co/
 
 ### Steps
 
@@ -42,6 +42,7 @@ including the Postgres database settings.
 - DB_HOST (this is set to 'db' in docker-compose file)
 - DB_PORT
 - AIRLAB_API_KEY
+- API_HOTS (should be set to 'fastapi')
 
 5.Create fastapi image from Dockerfile:
 

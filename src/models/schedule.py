@@ -21,13 +21,4 @@ class Schedule(BaseModel):
         from_attributes = True
 
 
-class ScheduleBaseModel(Base):
-    __tablename__ = 'schedule'
-    id = Column(Integer, primary_key=True, unique=True, index=True)
-    dep_iata = Column(String)
-    flight_number = Column(Integer)
-    dep_time = Column(DateTime)
-    arr_iata = Column(String)
-    arr_time = Column(DateTime)
-    duration = Column(Integer)
-    status = Column(String)
+

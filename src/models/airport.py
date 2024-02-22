@@ -18,12 +18,3 @@ class Airport(BaseModel):
         from_attributes = True
 
 
-class AirportBaseModel(Base):
-    __tablename__ = 'airport'
-    id = Column(Integer, primary_key=True, unique=True, index=True)
-    name = Column(String)
-    iata_code = Column(String)
-    icao_code = Column(String)
-    lat = Column(Float)
-    lng = Column(Float)
-    country_code = Column(String)

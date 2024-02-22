@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from src.api.endpoints.v3.airplane_endpoint import airplane_router_api
-from src.api.endpoints.v3.airport_endpoint import airport_router_api
-from src.api.endpoints.v3.schedule_endpoint import schedule_router_api
+from src.api.endpoints.v1.airplane_endpoint import airplane_router_api
+from src.api.endpoints.v1.airport_endpoint import airport_router_api
+from src.api.endpoints.v1.schedule_endpoint import schedule_router_api
 
 load_dotenv()
 

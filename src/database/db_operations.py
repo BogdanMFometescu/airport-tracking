@@ -1,8 +1,8 @@
 import os
 from .db_base import Database
-from src.models.airport import AirportBaseModel
-from src.models.schedule import ScheduleBaseModel
-from src.models.airplane import AirplaneBaseModel
+from src.database.db_schema import AirportBaseModel
+from src.database.db_schema import ScheduleBaseModel
+from src.database.db_schema import AirplaneBaseModel
 from sqlalchemy.orm import Session
 
 

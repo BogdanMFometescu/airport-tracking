@@ -16,9 +16,3 @@ class Airplane(BaseModel):
         from_attributes = True
 
 
-class AirplaneBaseModel(Base):
-    __tablename__ = "airplane"
-    id = Column(Integer, primary_key=True, unique=True, index=True)
-    iata = Column(String)
-    model = Column(String)
-    manufacturer = Column(String)
